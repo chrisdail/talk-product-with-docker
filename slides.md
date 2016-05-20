@@ -134,13 +134,27 @@ docker run -v /data:/usr/share/nginx/html:ro -d nginx
 
 ---
 
-# Common Base Image
+# Docker Images
 
 - Docker images always have a base linux distribution
-- Use a standard one (debian, ubuntu) or create your own
-- All containers build off your base
-  - Docker does not repeat layers -- Less disk space
-  - Worry about supporting a single linux flavor for all containers
+- Use a standard one (debian, alpine, ubuntu) or create your own
+
+---
+
+.center[![base images](images/docker-images.png)]
+
+- 4 Docker images with different base images
+- Image sizes add up (650M total)
+
+---
+
+.center[![base images](images/docker-base-image.png)]
+
+# Common Base Image
+
+- Build all containers from a single base
+- Docker does not repeat layers -- Less disk space (410M)
+- Only need to support a single linux flavor
 
 ---
 
