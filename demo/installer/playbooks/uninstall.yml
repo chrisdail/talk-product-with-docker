@@ -1,0 +1,7 @@
+- name: Uninstall
+  hosts: all
+  tasks:
+    - name: Remove Containers
+      shell: "docker rm -f nginx hello-devcon"
+    - name: Remove config files
+      file: path=/tmp/devcon-nginx.conf state=absent
