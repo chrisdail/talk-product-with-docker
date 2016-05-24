@@ -83,7 +83,6 @@ template:heading
 .right-column[
 - Multiple Customer Installation Sites
 - Different Versions at Different Sites
---
 - Robust Installation and Upgrade becomes important
 ]
 
@@ -129,7 +128,7 @@ docker run -v /data:/usr/share/nginx/html:ro -d nginx
 ```
 - You are including more than just 'nginx' here
   - This image is based on debian
-- Licensing wise you may be shipping a lot more packages than you intend
+- May be shipping more than you realize
 ]
 
 ---
@@ -195,13 +194,13 @@ docker run -d -p 5000:5000 --name registry registry:2
 - Does not repeat layers
 ```bash
 docker save \
-    foo/installer:1.0 \ 
-    foo/upgrade:1.0 \
-    foo/inventory:1.0 \
-    foo/discovery:1.0 \
-    foo/persistence:1.0 \
-    foo/ui:1.0 \
-    | gzip > images.tgz
+    devcon/installer:1.0 \ 
+    devcon/upgrade:1.0 \
+    devcon/inventory:1.0 \
+    devcon/discovery:1.0 \
+    devcon/persistence:1.0 \
+    devcon/ui:1.0 \
+| gzip > images.tgz
 ```
 
 ---
@@ -213,7 +212,7 @@ Installer included as part of packaged images. Installation is:
 2. Start installation docker image
 ```bash
 docker load < images.tgz
-docker run foo/installer:1.0
+docker run devcon/installer:1.0
 ```
 
 ---
@@ -235,7 +234,8 @@ docker run foo/installer:1.0
 
 # Docker Registry Issues
 
-- Not a great HA story requires S3 Storage
+- Not a great HA story
+- Requires S3 Storage
   - Public storage for a private server?
   - Chicken/Egg Issue
 - Cannot upload a collection of images (images.tgz)
@@ -287,7 +287,7 @@ docker run foo/installer:1.0
 
 # Ansible
 
-- We opted to use Ansible+docker for orchestration needs
+- We opted to use Ansible for orchestration needs
 - Advantages
   - Great docker support (better than the others)
   - Agentless (orchestration over SSH)
