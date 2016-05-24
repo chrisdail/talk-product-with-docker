@@ -1,0 +1,40 @@
+- name: Copy images to the first node
+  hosts: all[0]
+  tags: copy
+  vars:
+    docker_tags:
+      hello: devcon/hello:1.0
+      nginx: nginx:1.9.15
+      installer: devcon/installer:1.0  
+  tasks:
+    - name: Copy images to target servers
+      copy: src=data/images.tgz dest=/tmp/images.tgz
+    - name: Extract images to local docker instance
+      shell: docker load < /tmp/images.tgz
+    
+- name: Start docker registry on the first node
+  hosts: all[0]
+  vars:
+    docker_tags:
+      hello: devcon/hello:1.0
+      nginx: nginx:1.9.15
+      installer: devcon/installer:1.0  
+  tasks:
+    - name: Start registry
+      docker:
+        name: "registry"
+        docker_api_version: "1.18"
+        image: "registry:2"
+        state: "reloaded"
+        expose:
+          - "5000"
+        ports:
+          - "5000:5000"
+        restart_policy: "always"
+    - name: Tag all images into the docker registry
+      command: docker tag -f {{ item.value }} {{ hostvars[inventory_hostname].ansible_default_ipv4.address }}:5000/{{ item.value }}
+      with_dict: "{{ docker_tags }}"
+    - name: Push all images into the docker registry
+      command: docker push {{ hostvars[inventory_hostname].ansible_default_ipv4.address }}:5000/{{ item.value }}
+      with_dict: "{{ docker_tags }}"
+

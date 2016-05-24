@@ -1,6 +1,4 @@
-
-# Load docker tags
-- name: Installation
+- name: Load all docker images on each node
   hosts: all
   tags: copy
   tasks:
