@@ -36,22 +36,24 @@ Talk about my experience building an enterprise product with docker
 ---
 
 template: heading
-## Microservices
+## Microservices Architecture
 
 ---
 
 template: heading
-## Typically Seen in Software as a Service
+## "Modern" architecture for Software as a Service
 
-Common architecture for "Cloud Services"
+---
+
+template: heading
+## What About Enterprise Products
+
+How to use microservices and docker for packaged products?
 
 ---
 
 template: heading
 ![Y U NO](images/docker-allthings.jpg)
-## What About Enterprise Products
-
-How to use microservices and docker for packaged products?
 
 ---
 
@@ -95,8 +97,10 @@ template:heading
 ]
 .right-column[
 - Limited or no Internet Access (Security Reasons)
+  - Depending on customer networks
 - Trusted Sites - Anything you need coming from a site you control (HTTPS)
   - OS Package Updates, etc
+  - Imagine if you depend on npm repository for left-pad
 ]
 
 ---
@@ -140,6 +144,8 @@ docker run -v /data:/usr/share/nginx/html:ro -d nginx
 
 ---
 
+# Use Prebuilt Images
+
 .center[![base images](images/docker-images.png)]
 
 - 4 Docker images with different base images
@@ -147,9 +153,9 @@ docker run -v /data:/usr/share/nginx/html:ro -d nginx
 
 ---
 
-.center[![base images](images/docker-base-image.png)]
-
 # Common Base Image
+
+.center[![base images](images/docker-base-image.png)]
 
 - Build all containers from a single base
 - Docker does not repeat layers -- Less disk space (410M)
@@ -157,9 +163,20 @@ docker run -v /data:/usr/share/nginx/html:ro -d nginx
 
 ---
 
+template: heading
+# Packaging
+![packaging](images/packaging.jpg)
+???
+Reference
+http://www.brownpak.com/img/abcorr.jpg
+
+
+---
+
 # Packaging
 
 - Need a way to 'deliver' the software product
+- How to handle
   - Installation
   - Upgrade
 - How can you package a product based on docker?
@@ -184,7 +201,7 @@ docker run -v /data:/usr/share/nginx/html:ro -d nginx
 docker run -d -p 5000:5000 --name registry registry:2
 ```
 - Third-party commercial options
-- You still require internet access
+- Great for individual images
 
 ---
 
@@ -193,15 +210,21 @@ docker run -d -p 5000:5000 --name registry registry:2
 - Export docker images in a single tarball
 - Does not repeat layers
 ```bash
-docker save \
-    devcon/installer:1.0 \ 
-    devcon/upgrade:1.0 \
-    devcon/inventory:1.0 \
-    devcon/discovery:1.0 \
-    devcon/persistence:1.0 \
-    devcon/ui:1.0 \
-| gzip > images.tgz
+    docker save \ 
+        devcon/installer:1.0 \
+        devcon/upgrade:1.0 \
+        devcon/inventory:1.0 \
+        devcon/discovery:1.0 \
+        devcon/persistence:1.0 \
+        devcon/ui:1.0 \
+    | gzip > images.tgz
 ```
+
+---
+
+template: heading
+![installation](images/installation.jpg)
+# Installation
 
 ---
 
@@ -219,7 +242,7 @@ docker run devcon/installer:1.0
 
 # Distributing Images
 
-- Docker images still only on one node
+- `docker load` only loads images on one node
 - How to get to other nodes?
 
 ---
@@ -239,12 +262,21 @@ docker run devcon/installer:1.0
   - Public storage for a private server?
   - Chicken/Egg Issue
 - Cannot upload a collection of images (images.tgz)
-  - One at a time
+  - Upload one at a time
 - `docker push` is very slow
 
 ---
 
+template: heading
+![orchestration](images/orchestration.png)
+# Orchestration
+???
+https://devcentral.f5.com/weblogs/images/devcentral_f5_com/weblogs/macvittie/WindowsLiveWriter/WILSAutomationversusOrchestration_3DEC/image_2.png
+
+---
+
 # Docker Orchestration
+- How to get containers running where they need to be
 - Lots of different docker 'orchestration' options
   - Mesos + Marathon
   - Kubernetes
@@ -273,11 +305,11 @@ docker run devcon/installer:1.0
 
 ---
 
-# Traditional Orchestration
+# Traditional DevOps Tool for Orchestration
 
 - Vanilla Docker is pretty good
 - Just need something that can call the docker CLI/API on each node
-- Traditional Options:
+- Options:
   - Chef
   - Puppet
   - SaltStack

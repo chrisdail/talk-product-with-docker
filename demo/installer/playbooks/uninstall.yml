@@ -3,5 +3,6 @@
   tasks:
     - name: Remove Containers
       shell: "docker rm -f nginx hello-devcon"
+      ignore_errors: true
     - name: Remove config files
       file: path=/tmp/devcon-nginx.conf state=absent
