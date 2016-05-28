@@ -362,10 +362,83 @@ examples?
 
 ---
 
+template: heading
 # Demo
 
-- Productize last year's demo
-- Install to multiple nodes
+Productize last year's demo with install
+
+---
+
+# build.sh
+
+- Build containers and `docker save`
+
+```bash
+docker pull nginx:1.9.15
+
+docker build -t chrisdail/ansible:stable ansible/
+docker build -t devcon/hello:1.0 hello/
+docker build -t devcon/installer:1.0 playbooks/
+
+echo Saving images.tgz
+mkdir build
+docker save devcon/hello:1.0 nginx:1.9.15 devcon/installer:1.0 \
+    | gzip > build/images.tgz
+cp install.sh build/
+echo Done
+```
+
+---
+
+# install.sh
+
+- Extract images and start install container
+
+```bash
+echo docker load
+docker load < images.tgz
+echo docker run devcon/installer:1.0
+docker run --rm -it -v $(pwd):/playbooks/data devcon/installer:1.0
+```
+
+---
+
+# Ansible inventory
+
+```ini
+lglop125.lss.emc.com
+lglop126.lss.emc.com
+lglop127.lss.emc.com
+
+[all:vars]
+ansible_ssh_pass=password
+```
+
+---
+
+# Installer Dockerfile
+
+```dockerfile
+FROM chrisdail/ansible:stable
+
+ADD playbooks /playbooks
+WORKDIR /playbooks
+
+CMD ansible-playbook -i /playbooks/data/inventory install.yml
+```
+
+---
+
+# Install Playbooks
+
+- install.yml
+- nginx.conf.j2
+- registry.yml
+
+---
+
+template: heading
+# Installing
 
 ---
 

@@ -37,4 +37,3 @@
     - name: Push all images into the docker registry
       command: docker push {{ hostvars[inventory_hostname].ansible_default_ipv4.address }}:5000/{{ item.value }}
       with_dict: "{{ docker_tags }}"
-
