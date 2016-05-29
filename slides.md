@@ -53,7 +53,7 @@ How to use microservices and docker for packaged products?
 ---
 
 template: heading
-![Y U NO](images/docker-allthings.jpg)
+![allthings](images/docker-allthings.jpg)
 
 ---
 
@@ -164,8 +164,8 @@ docker run -v /data:/usr/share/nginx/html:ro -d nginx
 ---
 
 template: heading
-# Packaging
 ![packaging](images/packaging.jpg)
+# Packaging
 ???
 Reference
 http://www.brownpak.com/img/abcorr.jpg
@@ -327,10 +327,6 @@ https://devcentral.f5.com/weblogs/images/devcentral_f5_com/weblogs/macvittie/Win
 - Disadvantages
   - Smaller/newer community
   - GPLv3 is trickier for licensing
-???
-go into details with inventory
-integrating with Ansible? Bedrock?
-examples?
 
 ---
 
@@ -338,6 +334,14 @@ examples?
 
 - Docker container with Ansible
 - Installation playbooks to install containers on different nodes
+
+---
+
+template:heading
+![upgrade](images/upgrade.jpg)
+# Upgrade
+???
+Reference: https://www.sott.net/image/s1/31516/full/yorkshire_push_1553496i.jpg
 
 ---
 

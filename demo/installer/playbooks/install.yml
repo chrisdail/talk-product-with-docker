@@ -7,6 +7,14 @@
     - name: Extract images to local docker instance
       shell: docker load < /tmp/images.tgz 
 
+- name: Check for previous installation
+  hosts: all
+  tasks:
+    - name: Show Containers
+      shell: docker ps
+      register: result
+    - debug: var=result.stdout_lines
+
 - name: Run Containers
   hosts: all
   tasks:
