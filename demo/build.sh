@@ -8,7 +8,7 @@ docker pull nginx:1.9.15
 
 docker build -t chrisdail/ansible:stable ansible/
 docker build -t devcon/hello:1.0 hello/
-docker build -t devcon/installer:1.0 playbooks/
+docker build -t devcon/installer:1.0 installer/
 
 echo Saving images.tgz
 mkdir build

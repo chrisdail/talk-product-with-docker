@@ -373,6 +373,16 @@ Productize last year's demo with install
 
 ---
 
+# Installing
+
+- Run install.sh
+- While installing, look at the playbooks
+  - install.yml
+  - nginx.conf.j2
+  - registry.yml
+
+---
+
 # build.sh
 
 - Build containers and `docker save`
@@ -407,19 +417,6 @@ docker run --rm -it -v $(pwd):/playbooks/data devcon/installer:1.0
 
 ---
 
-# Ansible inventory
-
-```ini
-lglop125.lss.emc.com
-lglop126.lss.emc.com
-lglop127.lss.emc.com
-
-[all:vars]
-ansible_ssh_pass=password
-```
-
----
-
 # Installer Dockerfile
 
 ```dockerfile
@@ -433,19 +430,18 @@ CMD ansible-playbook -i /playbooks/data/inventory install.yml
 
 ---
 
-# Install Playbooks
+# Ansible inventory
 
-- install.yml
-- nginx.conf.j2
-- registry.yml
+```ini
+lglop125.lss.emc.com
+lglop126.lss.emc.com
+lglop127.lss.emc.com
 
----
-
-template: heading
-# Installing
+[all:vars]
+ansible_ssh_pass=password
+```
 
 ---
 
 template: heading
 # Questions?
-
