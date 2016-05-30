@@ -573,3 +573,9 @@ template: heading
 
 template: heading
 # Questions?
+
+.footnote[
+Slides: https://chrisdail.github.io/talk-product-with-docker
+
+Demo: https://github.com/chrisdail/talk-product-with-docker
+]
