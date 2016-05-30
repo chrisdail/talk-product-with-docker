@@ -11,8 +11,6 @@ Chris Dail - [@chrisdail](http://twitter.com/chrisdail)
 
 Director, Software Engineering at [EMC](http://www.emc.com)
 
-
-
 ---
 
 layout: false
@@ -405,13 +403,8 @@ Reference: https://denibertovic.com/talks/supercharge-development-env-using-dock
 
 ```
   $ docker info
-  Containers: 0
-  Images: 38
   Server Version: 1.9.1
   Storage Driver: devicemapper
-  Pool Name: docker-254:0-3148843-pool
-  Pool Blocksize: 65.54 kB
-  Base Device Size: 10.74 GB
   Backing Filesystem:
 *  Data file: /dev/loop3
 *  Metadata file: /dev/loop4
@@ -429,7 +422,7 @@ Reference: https://denibertovic.com/talks/supercharge-development-env-using-dock
 
 # Kernel + Graph Driver
 
-- Graph driver - how docker storage images/containers
+- Graph driver - how docker stores images/containers
 - Find working combination of 
   - Linux OS + kernel version + docker graph driver
 - Kernel Version Matters
