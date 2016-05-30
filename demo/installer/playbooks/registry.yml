@@ -1,11 +1,6 @@
 - name: Copy images to the first node
   hosts: all[0]
   tags: copy
-  vars:
-    docker_tags:
-      hello: devcon/hello:1.0
-      nginx: nginx:1.9.15
-      installer: devcon/installer:1.0  
   tasks:
     - name: Copy images to target servers
       copy: src=data/images.tgz dest=/tmp/images.tgz

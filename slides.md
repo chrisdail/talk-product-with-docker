@@ -11,6 +11,8 @@ Chris Dail - [@chrisdail](http://twitter.com/chrisdail)
 
 Director, Software Engineering at [EMC](http://www.emc.com)
 
+
+
 ---
 
 layout: false
@@ -85,7 +87,7 @@ template:heading
 .right-column[
 - Multiple Customer Installation Sites
 - Different Versions at Different Sites
-- Robust Installation and Upgrade becomes important
+- Robust Installation and Upgrade become important
 ]
 
 ---
@@ -131,8 +133,10 @@ template:heading
 docker run -v /data:/usr/share/nginx/html:ro -d nginx
 ```
 - You are including more than just 'nginx' here
-  - This image is based on debian
+  - Docker images include Operating System
+  - This image is based on alpine linux
 - May be shipping more than you realize
+- Pay attention to open source licenses you use
 ]
 
 ---
@@ -140,7 +144,7 @@ docker run -v /data:/usr/share/nginx/html:ro -d nginx
 # Docker Images
 
 - Docker images always have a base linux distribution
-- Use a standard one (debian, alpine, ubuntu) or create your own
+- Use a standard one (debian, alpine, ubuntu, buildpack) or create your own
 
 ---
 
@@ -187,7 +191,7 @@ http://www.brownpak.com/img/abcorr.jpg
 
 - Public 'Docker Registry'
   - You are making your image 'public'
-- Depending on docker.com to keep this up
+- Depending on docker.com to keep docker hub up and working the same
 
 ![Docker Hub](images/docker-hub.png)
 
@@ -243,7 +247,8 @@ docker run devcon/installer:1.0
 # Distributing Images
 
 - `docker load` only loads images on one node
-- How to get to other nodes?
+- Distributed applications with many nodes
+- How to get images to other nodes?
 
 ---
 
@@ -264,6 +269,22 @@ docker run devcon/installer:1.0
 - Cannot upload a collection of images (images.tgz)
   - Upload one at a time
 - `docker push` is very slow
+
+---
+
+# Insecure Registry
+
+- For private registry, may not want HTTPS with signed certificates
+- Option on Docker Daemon for insecure registry
+  - Requires restart of the docker daemon
+- `/etc/sysconfig/docker`
+
+```bash
+DOCKER_OPTS="--insecure-registry 0.0.0.0/0"
+```
+
+- Should really be on `docker pull`
+  - https://github.com/docker/docker/issues/8887
 
 ---
 
@@ -332,8 +353,10 @@ https://devcentral.f5.com/weblogs/images/devcentral_f5_com/weblogs/macvittie/Win
 
 # Installer
 
-- Docker container with Ansible
-- Installation playbooks to install containers on different nodes
+- Create installer as Ansible Playbooks
+  - Can install containers to different nodes
+- Docker image with Ansible
+- Create installer docker image with Ansible+Playbooks
 
 ---
 
@@ -367,25 +390,127 @@ Reference: https://www.sott.net/image/s1/31516/full/yorkshire_push_1553496i.jpg
 ---
 
 template: heading
+![production](images/what_is_docker.png)
+# Docker in Production
+???
+Reference: https://denibertovic.com/talks/supercharge-development-env-using-docker/img/what_is_docker.png
+
+---
+
+# Loopback Device
+
+- Docker uses loopback device by default
+  - Sparse files on root drive
+- **Do not use for production**
+
+```
+  $ docker info
+  Containers: 0
+  Images: 38
+  Server Version: 1.9.1
+  Storage Driver: devicemapper
+  Pool Name: docker-254:0-3148843-pool
+  Pool Blocksize: 65.54 kB
+  Base Device Size: 10.74 GB
+  Backing Filesystem:
+*  Data file: /dev/loop3
+*  Metadata file: /dev/loop4
+  Data Space Used: 1.647 GB
+  Data Space Total: 107.4 GB
+  Data Space Available: 28.95 GB
+  Metadata Space Used: 2.38 MB
+  Metadata Space Total: 2.147 GB
+  Metadata Space Available: 2.145 GB
+```
+
+- Create dedicated storage device (disk or partition)
+
+---
+
+# Kernel + Graph Driver
+
+- Graph driver - how docker storage images/containers
+- Find working combination of 
+  - Linux OS + kernel version + docker graph driver
+- Kernel Version Matters
+  - Driver filesystems use kernel modules
+  - Many devicemapper bugs are kernel bugs
+- Popular Graph Driver
+  - aufs - Often used with Ubuntu
+  - overlay - Gaining popularity. Requires specific kernel version
+  - devicemapper (with LVM) - You probably have this
+
+---
+
+# Devicemapper
+
+/etc/sysconfig/docker
+```bash
+DOCKER_OPTS="--storage-driver devicemapper --storage-opt dm.fs=xfs \
+            --storage-opt dm.datadev=/dev/LVDockerData \         
+            --storage-opt dm.metadatadev=/dev/LVDockerMetaData"
+```
+
+```
+  # docker info
+  Containers: 29
+  Images: 580
+  Storage Driver: devicemapper
+  Pool Name: docker-254:0-570427520-pool
+  Pool Blocksize: 65.54 kB
+  Backing Filesystem: xfs
+  Data file: /dev/LVDockerData
+  Metadata file: /dev/LVDockerMetaData
+  Data Space Used: 10.18 GB
+  Data Space Total: 51.54 GB
+* Data Space Available: 41.36 GB
+  Metadata Space Used: 30.44 MB
+  Metadata Space Total: 2.147 GB
+* Metadata Space Available: 2.117 GB
+```
+
+---
+
+# Do Not Run Out of Space
+
+- Docker images take up space
+- Docker containers are copy-on-write
+  - Any files written take up space
+- Docker hangs and crashes when out of space
+- Map container volumes to disk
+  - `/data` - Map in persistent storage
+  - `/var/log` - Map in directory for log files
+
+---
+
+# Removing Unused Images
+
+- If you are running out of space, remove unused images
+- docker-gc - https://github.com/spotify/docker-gc
+
+---
+
+# Keep Services Running
+
+- Use restart policy
+```
+docker run --restart always ...
+```
+
+---
+
+template: heading
 # Demo
 
 Productize last year's demo with install
 
----
-
-# Installing
-
-- Run install.sh
-- While installing, look at the playbooks
-  - install.yml
-  - nginx.conf.j2
-  - registry.yml
+Hello World API container with load balancer
 
 ---
 
 # build.sh
 
-- Build containers and `docker save`
+- Build containers and `docker save` creating images.tgz
 
 ```bash
 docker pull nginx:1.9.15
@@ -417,6 +542,19 @@ docker run --rm -it -v $(pwd):/playbooks/data devcon/installer:1.0
 
 ---
 
+# inventory
+
+```ini
+lglop125.lss.emc.com
+lglop126.lss.emc.com
+lglop127.lss.emc.com
+
+[all:vars]
+ansible_ssh_pass=password
+```
+
+---
+
 # Installer Dockerfile
 
 ```dockerfile
@@ -430,16 +568,13 @@ CMD ansible-playbook -i /playbooks/data/inventory install.yml
 
 ---
 
-# Ansible inventory
+template: heading
+# Installation Playbooks
 
-```ini
-lglop125.lss.emc.com
-lglop126.lss.emc.com
-lglop127.lss.emc.com
+---
 
-[all:vars]
-ansible_ssh_pass=password
-```
+template: heading
+# Installing
 
 ---
 
