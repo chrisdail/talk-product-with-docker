@@ -6,10 +6,9 @@ class: center, middle, inverse
 
 # Building an Enterprise Product with Docker
 
-## Maritime Devcon 2016
 Chris Dail - [@chrisdail](http://twitter.com/chrisdail)
 
-Director, Software Engineering at [EMC](http://www.emc.com)
+Director, Software Engineering for Neutrino Platform
 
 
 
@@ -19,21 +18,84 @@ layout: false
 
 # Intro
 
-Talk about my experience building an enterprise product with docker
+Talk about experiences building VXRack Neutrino. Specifically building an enterprise product with docker.
 - Lessons Learned
 - Case Study
 - How-To
 
---
+---
 
-"We" means the product team I work with
+template: heading
+# Architecture for Distributed Applications
 
 ---
 
-# Rewind, Maritime Devcon 2015
+template: heading
+![microservices](images/micro-service-architecture.png)
+# Changing to Microservices
 
-- Advantages of Microservices architecture
-- Basics of Docker to achieve this architecture
+---
+
+# What are Microservices?
+
+> In computing, microservices is a software **architecture style**, 
+> in which complex applications are composed of **small, independent
+> processes** communicating with each other using **language-agnostic APIs**. 
+> These services are **small, highly decoupled and focus on doing a 
+> small task**.&rdquo; - Wikipedia
+
+---
+
+template: heading
+.left[![microservices](images/micro-services-architecture2.png)]
+# Monolithic vs Microservices
+
+---
+
+template: heading
+![microservices](images/monolithic-upgrade.png)
+# Monolithic Upgrade
+
+---
+
+template: heading
+![microservices](images/micro-upgrade.png)
+# Microservices Upgrade
+
+---
+
+template: heading
+# Change In Process
+Change in team organization
+
+---
+
+template: heading
+![microservices](images/monolithic-process.png)
+# Monolithic Process
+
+---
+
+template: heading
+![microservices](images/micro-process.png)
+# Microservices Process
+
+---
+
+# Benefits
+
+- Smaller codebase, easier to understand
+- Easier to scale independent services
+- Easier to upgrade, version or replace a service
+- Faster build/deploy
+- Choice of technology stack
+
+---
+
+# Downside
+
+- Can create messy deployment problems
+- Docker makes this easier with containers
 
 ---
 
@@ -575,8 +637,3 @@ template: heading
 
 template: heading
 # Installing
-
----
-
-template: heading
-# Questions?
