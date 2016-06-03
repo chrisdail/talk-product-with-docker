@@ -301,7 +301,7 @@ https://devcentral.f5.com/weblogs/images/devcentral_f5_com/weblogs/macvittie/Win
   - Kubernetes
   - Docker Swarm
   - CoreOS, Maestro, Helios
-- Evaluated these ~18 months ago
+- Evaluated these ~14 months ago
 
 ---
 
